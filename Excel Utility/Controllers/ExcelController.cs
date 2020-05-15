@@ -24,19 +24,40 @@ namespace Excel_Utility.Controllers
         [HttpGet("wrap1")]
         public object GetExcel()
         {
-            List<Country> countries= new List<Country>();
+            List<Employee> employees= new List<Employee>();
             foreach(var i in Enumerable.Range(0, 50).ToList())
             {
-                countries.Add(new Country { 
-                    CountryId = i, 
-                    IsDeleted = false, 
-                    CountryAbbreviation = "abb"+i, 
-                    CountryName = "country"+i, 
-                    CountryCallingCode = "10"+i });
+                employees.Add(new Employee
+                { Id=i,
+                   Date=DateTime.Now,
+                   Name="name"+i,
+                   IsJoined=true,
+                   DeleteIt="del"+i
+                 });
             }
-            
 
-            return File((byte[])ExcelUtilityWrapper.Export(countries,"CountriesList"), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Countries.xlsx");
+            List<KeyValuePair<string, string>>  columnsToExport = ColumnToExportEmployees();
+
+            //byte[] result = ExcelUtilityWrapper.Export(countries, "CountriesList");
+            byte[] result = ExcelUtilityWrapper.ExportWithCustomStyle(employees, "EmployeeList",columnsToExport);
+
+
+            return File((byte[])result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Countries.xlsx");
+        }
+
+
+
+        private List<KeyValuePair<string, string>> ColumnToExportEmployees()
+        {
+            List<KeyValuePair<string, string>> columnsToExport = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>("Id", "u_Id"),
+                new KeyValuePair<string, string>("Date", "u_Date"),
+                new KeyValuePair<string, string>("Name", "u_Name"),
+                new KeyValuePair<string, string>("IsJoined","u_IsJoined"),
+                //delete "DeleteIt" column
+           };
+            return columnsToExport;
         }
 
     }
