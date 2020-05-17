@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Excel_Utility.Utilities
 {
-    public static class ExcelUtilityWrapper
+    public static class ListTypeToExcel
     {
         public static byte[] Export<T>(IList<T> dataToExport,string workSheetName)
         {

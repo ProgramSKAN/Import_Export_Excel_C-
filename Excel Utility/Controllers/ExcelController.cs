@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using Excel_Utility.Models;
@@ -36,11 +37,24 @@ namespace Excel_Utility.Controllers
                  });
             }
 
+            dynamic employeesObj = new List<dynamic>();
+            dynamic row = new ExpandoObject();
+
+            foreach (var i in Enumerable.Range(0, 50).ToList())
+            {
+                row.Id = i;
+                row.Date = DateTime.Now;
+                row.Name = "name" + i;
+                row.IsJoined = true;
+                row.DeleteIt = "del" + i;
+                employeesObj.Add(row);
+            }
+
             List<KeyValuePair<string, string>>  columnsToExport = ColumnToExportEmployees();
 
             //byte[] result = ExcelUtilityWrapper.Export(countries, "CountriesList");
-            byte[] result = ExcelUtilityWrapper.ExportWithCustomStyle(employees, "EmployeeList",columnsToExport);
-
+            //byte[] result = ListTypeToExcel.ExportWithCustomStyle(employees, "EmployeeList",columnsToExport);
+            byte[] result = DyanmicListToExcel.ExportDynamicListObjectArray(employeesObj, "EmployeeList", columnsToExport);
 
             return File((byte[])result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Countries.xlsx");
         }
